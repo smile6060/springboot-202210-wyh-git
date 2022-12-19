@@ -2,11 +2,20 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+// 인터페이스 넣어줌
 <mapper namespace="com.study.springboot202210wyh.repository.UserRepository">
+
+//<insert id="saveUser" Repository 메소드 명이랑 같아야함
+// 메소드는 실행되고 나면 결과가 있음 (return이 있음)
+// insert, update, delete 무조건 return이 있음 , 무조건 int임
     <insert id="saveUser" parameterType="com.study.springboot202210wyh.web.dto.UserDto"
-    useGeneratedKeys="true" keyProperty="userId">
+useGeneratedKeys="true" keyProperty="userId">
+
+
         insert into user_mst
+// 데이터 꺼내올때 #{변수명 넣어줌}
         values(0, #{username}, #{password}, #{name}, #{email})
+
     </insert>
 
     <select id="findUserByUserId" parameterType="integer" resultType="com.study.springboot202210wyh.web.dto.UserDto">

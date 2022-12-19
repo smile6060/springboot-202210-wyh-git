@@ -1,0 +1,18 @@
+차이점?
+
+RestController
+- ResponseBody를 달지 않아도 달고 있는것과 동일한 효과를 가짐
+- 데이터만 응답하는 컨트롤러다 하면 RestController를 사용
+ 
+Controller
+- 응답할때 html을 응답함
+- 일반 Controller에서 데이터 응답하는 방법 ResponseBody를 달아주는거임
+- html을 응답하는게 아니고 데이터 응답을 한다.
+
+RequestMapping
+- 메소드 위에 달경우 모든 메소드들을 동일한 주소로 사용한다는 뜻
+
+PostMapping
+
+매개 변수랑 @requestbody가 붙으면 제이슨 형식으로 붙는다라는 뜻
+

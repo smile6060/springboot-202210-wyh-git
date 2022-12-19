@@ -1,0 +1,33 @@
+BAD_REQUEST - 400번 오류다. 우리가 지정해주는 오류임.
+- 이거를 사용하려면 밑에 처럼 해야함.
+- return new ResponseEntity<>("응답할 데이터", HttpStatus.BAD_REQUEST);
+  ResponseEntity<>(객체);
+
+HttpStatus.OK
+- 200번으로 주는거다
+CREATED
+
+    @PostMapping("/user")
+    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
+        System.out.println(userDto);
+// 여기서 "응답할 데이터" String임
+        return new ResponseEntity<>("응답할 데이터", HttpStatus.CREATED);
+        // 밑에꺼는 빌더 형식으로 잡는 방법이다. 둘다 결과는 같음
+//        return ResponseEntity.created(null).body(userService.addUser(userDto));
+// body(userService.addUser(userDto) 이게 integer임 와일드카드
+
+
+
+
+
+
+====================////////========================
+
+    @GetMapping("/user/{userId}")
+// {userId}여기에 값을 넣어주면 (@PathVariable int userId) userId에 같은 값이 들어가는데 이게 @PathVariable이다.
+
+    public ResponseEntity<?> getUser(@PathVariable int userId) {
+        UserDto userDto = userService.getUser(userId);
+        return ResponseEntity.ok().body(userDto);
+    }
+}
