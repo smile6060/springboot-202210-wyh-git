@@ -56,6 +56,10 @@
       box-shadow: 0px 0px 10px 1px #dbdbdb;
     }
 
+    .success {
+      border: 3px solid #00dd4d;
+    }
+
     .error-msg {
       color: rgb(255, 73, 23);
       font-size: 11px;
@@ -113,7 +117,7 @@
   <script>
     class RegisterApi {
       static #instance = null;
-      static #getInstance () {
+      static getInstance () {
         if (this.#instance == null) {
           this.#instance = new RegisterApi();
         }
@@ -136,29 +140,37 @@
           }
         });
       }
+
+      duplicateUsername (username) {
+        const usernameInput = document.querySelectorAll(".register-text")[ 0 ];
+        const usernameError = document.querySelectorAll(".error-msg")[ 0 ];
+
+        $.ajax({
+          async: false,
+          type: "get",
+          url: "/api/account/username",
+          data: {"username": username},
+          dataType: "json",
+          success: (response) => {
+            usernameInput.classList.add("success");
+            usernameError.textContent = "";
+          },
+          error: (errorResponse) => {
+            console.log(errorResponse);
+            usernameInput.classList.remove("success");
+            // errorResponse.responseJSON.data.duplicate; 이미사용하는 아이디입니다. 이거임. textContent 대신 Innerextention?이것도 사용 가능
+            usernameError.textContent = errorResponse.responseJSON.data.duplicate;
+          }
+        });
+      }
     }
 
-    duplicateUsername(username) {
-      $.ajax({
-        async: false,
-        type: "get",
-        url: "/api/account/username",
-        contentType: "application/json",
-        data: JSON.stringify({"username": username}),
-        dataType: "json",
-        success: (response) => {
-
-        },
-        error: (errorResponse) => {
-
-        }
-      });
-    }
-
-
+    //# = private getter,setter 없이는 사용불가능 하지만 클래스 안에서는 가능.
+    // static이라 한번 공유된 값은 계속 그 값임.
+    // 싱글톤
     class RegisterService {
       static #instance = null;
-      static #getInstance () {
+      static getInstance () {
         if (this.#instance == null) {
           this.#instance = new RegisterService();
         }
@@ -166,6 +178,7 @@
       }
 
       addEventToUsernameInput () {
+        //[0] 인덱스 usernameInput 객체이다.
         const usernameInput = document.querySelectorAll(".register-text")[ 0 ];
         usernameInput.onblur = () => {
           alert("중복확인 요청");
@@ -175,8 +188,11 @@
       }
 
     }
-
+    // 문서가 준비 다 되었다고 해주는게 window.onload이다. html 정상적으로 다 실행됐으면 자동으로 window.onload가 실행됨.
+    // window.onload(); <- 이런건 함수 호출임.
     window.onload = () => {
+      // static 메소드 때문에 getInstance를 호출 가능해진다.
+      // UsernameInput(아이디 입력하는곳)한테 포커스 벗어나면 입력해라. addEventToUsernameInput이걸 입력
       RegisterService.getInstance().addEventToUsernameInput();
     }
 
