@@ -124,7 +124,8 @@
         return this.#instance;
       }
 
-      registration (user) {
+      registrationUser (user) {
+        const errorMsgs = document.querySelectorAll(".error-msg");
         $.ajax({
           async: false,
           type: "post",
@@ -133,10 +134,31 @@
           data: JSON.stringify(user),
           dataType: "json",
           success: (response) => {
-
+            console.log(response);
+            errorMsgs.forEach(errorMsg => {
+              errorMsg.textContent = "";
+            });
           },
           error: (errorResponse) => {
+            console.log(errorResponse);
+            const errorMap = errorResponse.responseJSON.data;
 
+            errorMsgs.forEach(errorMsg => {
+              errorMsg.textContent = "";
+            });
+
+
+            Object.keys(errorMap).forEach(key => {
+              if (key == "username") {
+                errorMsgs[ 0 ].textContent = errorMap[ key ];
+              } else if (key == "password") {
+                errorMsgs[ 1 ].textContent = errorMap[ key ];
+              } else if (key == "name") {
+                errorMsgs[ 2 ].textContent = errorMap[ key ];
+              } else if (key == "email") {
+                errorMsgs[ 3 ].textContent = errorMap[ key ];
+              }
+            });
           }
         });
       }
@@ -158,8 +180,9 @@
           error: (errorResponse) => {
             console.log(errorResponse);
             usernameInput.classList.remove("success");
-            // errorResponse.responseJSON.data.duplicate; 이미사용하는 아이디입니다. 이거임. textContent 대신 Innerextention?이것도 사용 가능
-            usernameError.textContent = errorResponse.responseJSON.data.duplicate;
+            // <!--            errorResponse.responseJSON.data.duplicate; 이미사용하는 아이디입니다. 이거임. textContent 대신 Innerextention?이것도 사용 가능 -->
+            // < !--usernameError.textContent = errorResponse.responseJSON.data.username; innerHTML을 줌으로 줄 바꿈 가능캐함-- >
+            usernameError.innerHTML = errorResponse.responseJSON.data.username;
           }
         });
       }
@@ -181,19 +204,36 @@
         //[0] 인덱스 usernameInput 객체이다.
         const usernameInput = document.querySelectorAll(".register-text")[ 0 ];
         usernameInput.onblur = () => {
-          alert("중복확인 요청");
           RegisterApi.getInstance().duplicateUsername(usernameInput.value);
         }
 
       }
 
+      addEventToRegisterButton () {
+        const registerButton = document.querySelector(".register-button");
+        registerButton.onclick = () => {
+          const registerInputs = document.querySelectorAll(".register-text");
+          const user = {
+            username: registerInputs[ 0 ].value,
+            password: registerInputs[ 1 ].value,
+            name: registerInputs[ 2 ].value,
+            email: registerInputs[ 3 ].value
+          }
+          RegisterApi.getInstance().registrationUser(user);
+        }
+      }
+
+
+
     }
     // 문서가 준비 다 되었다고 해주는게 window.onload이다. html 정상적으로 다 실행됐으면 자동으로 window.onload가 실행됨.
     // window.onload(); <- 이런건 함수 호출임.
+    // static 메소드 때문에 getInstance를 호출 가능해진다.
+    // UsernameInput(아이디 입력하는곳)한테 포커스 벗어나면 입력해라. addEventToUsernameInput이걸 입력
     window.onload = () => {
-      // static 메소드 때문에 getInstance를 호출 가능해진다.
-      // UsernameInput(아이디 입력하는곳)한테 포커스 벗어나면 입력해라. addEventToUsernameInput이걸 입력
+
       RegisterService.getInstance().addEventToUsernameInput();
+      RegisterService.getInstance().addEventToRegisterButton();
     }
 
   </script>

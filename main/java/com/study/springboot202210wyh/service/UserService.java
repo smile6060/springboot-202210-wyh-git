@@ -3,6 +3,7 @@ package com.study.springboot202210wyh.service;
 import com.study.springboot202210wyh.repository.UserRepository;
 import com.study.springboot202210wyh.web.dto.UserDto;
 import com.study.springboot202210wyh.web.exception.CustomDuplicateUsernameException;
+import com.study.springboot202210wyh.web.exception.CustomValidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public int addUser(UserDto userDto) {
-        int userId = 0;
+//        int userId = 0;
         System.out.println("데이터베이스에 insert 전: " + userDto);
         userRepository.saveUser(userDto);
         System.out.println("데이터베이스에 insert 후: " + userDto);
@@ -34,8 +35,8 @@ public class UserService {
         // 만약에 userDto가 null이 아니면 Map을 실행해라
         if(userDto != null) {
             Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("duplicate", "이미 존재하는 사용자 이름입니다.");
-            throw new CustomDuplicateUsernameException("Duplicate username!!!", errorMap);
+            errorMap.put("username", "이미 존재하는 사용자 이름입니다.");
+            throw new CustomValidException(errorMap);
         }
     }
 
